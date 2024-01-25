@@ -1,0 +1,5 @@
+opencv-python
+reedsolo
+numpy
+torch
+torchvision

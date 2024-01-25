@@ -1,0 +1,6 @@
+__pycache__
+*.pyc
+log*.txt
+output-*/
+test_images/*.bmp
+test.py
