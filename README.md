@@ -20,6 +20,7 @@ Other adjustable parameters include:
 - **DATA_LENGTH** The length of the data bytes of each sequence
 - **IMAGE_NUMS** The number of encoded images
 
-If you want to turn on the image repair function, modify the **repair_mode** option in the **dna_to_image** function. If you want to train a new image repair network, create a new folder called **train** and put the image set in it. Then run **train.py** in the nn folder.
+If you want to enable the image repair function, please download the network from https://drive.google.com/file/d/1hwrLgfwms1bDXkYxM8D_hd3IU8xaqDsU/view?usp=sharing and put it in the **nn** folder, then modify the **repair_mode** option in the **dna_to_image** function. If you want to train a new image repair network, please create a new folder called **train** and put the image set in it. Then run **train.py** in the nn folder.
+
 ## Note
 HELIX is still under review, we will update this document after acceptance and upload it to PyPI.
