@@ -1,5 +1,6 @@
 # HELIX
 HELIX: A Novel Biological Image Storage System based on DNA Data Storage
+## Requirements
 
 ## Quick Start
 You can execute the test.py file. It will encode an example image as a set of nucleotide sequences, simulate generating a 2% error, and successfully recover it.
