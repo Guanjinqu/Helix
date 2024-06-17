@@ -8,7 +8,7 @@ HELIX: A Novel Biological Image Storage System based on DNA Data Storage
 - torchvision
 ## Quick Start
 You can execute the **test.py** file. It will encode an example image as a set of nucleotide sequences, simulate generating a 1% error, and successfully recover it.
-Example images can be downloaded from the reference website: https://www.science.org/doi/abs/10.1126/science.abp9444
+You can download the images used in the HELIX test at https://drive.google.com/file/d/10TlTANyCy9x_YeySMbfHEgeZ9nunW6yZ/view?usp=sharing. These images are all from publicly available datasets.
 
 If you want to use other images, please modify the parameters in **coder.py**:
 - **WIDTH** Image width resolution
