@@ -112,19 +112,17 @@ class Outer_Code:
         return additional_digits
 
     def encode_unit(self,list):
-        """
-        输入图片的编号以及reads_nums数量的序列，返回一个255Xlength的RS矩阵，但是校验位的index部位为空
-        """
-        #首先生成一个rs矩阵，包含index部分
+
+
         rs_matrix = np.zeros((255,self.length),dtype=int)
 
-        #接下来将输入序列放到矩阵里
+
         for i,row in enumerate(rs_matrix):
             if i == self.reads_nums or i == len(list):
                 break
             row[:] = np.frombuffer(list[i], dtype=np.uint8)
         
-        #接下来从非index部分，每选取一列，生成一个校验位，并写入到矩阵中
+
         for i in range(4,self.length):
             now_info = rs_matrix[:self.reads_nums,i].tolist()
             ecc_info = self.rs_code.encode(now_info)
@@ -132,9 +130,7 @@ class Outer_Code:
         
         return rs_matrix
     def encode(self,image_id,input_list):
-        """
-        输入图片id以及这个图片生成的序列list，生成带校验序列的序列list
-        """
+
 
         strands_list = []
         for line in input_list:
@@ -142,7 +138,7 @@ class Outer_Code:
             strands_list.append(strand)
 
         ecc_list = []
-        ecc_block_nums = math.ceil(len(strands_list)/self.reads_nums) #计算这些序列要被分为多少个块
+        ecc_block_nums = math.ceil(len(strands_list)/self.reads_nums)
 
         if self.mode == 1:
             for j in range(len(strands_list)//32+1):
@@ -161,7 +157,7 @@ class Outer_Code:
             now_list = strands_list[i*self.reads_nums:i*self.reads_nums+self.reads_nums]
             rs_matrix = self.encode_unit(now_list)
             self.test_list.append(rs_matrix)
-            #接下来依次输出校验序列
+
             for j in range(self.ecc_nums):
                 now_info = rs_matrix[self.reads_nums+j,4:].tolist()
 
@@ -180,13 +176,10 @@ class Outer_Code:
         return result
     
     def decode(self,id_nums,strands_list):
-        """
-        输入图片的数量以及内码后的序列，给出外码后的序列集，注意，我这里解码的时候已经把防聚合物的函数给用了.
-        此外输出的外码list为 [[第一个图片的序列]，[第二个图片的序列]……]
-        """
+
         result_list = []
-        blocks_dict = {}  #这个是最后解码时候的RS矩阵字典
-        reads_dict = {}   #这个是简单的分图片的序列字典
+        blocks_dict = {}  
+        reads_dict = {}  
         for i  in range(id_nums):
             if self.mode == 0:
                 blocks_dict[i] = [np.zeros((255,self.length),dtype=int)]
@@ -197,7 +190,7 @@ class Outer_Code:
                 #print(len(blocks_dict[i]))
             reads_dict[i] = {"info":[],"ecc":[]}
             result_list.append([])
-        #首先对解码后的序列进行一个排序,然后放到一个list里
+
         for strand in strands_list:
             strand = revert_header(strand, 16)
             image_index, start, current, length, outer = decode_enhanced_header(strand[:4])
@@ -211,26 +204,24 @@ class Outer_Code:
             else:
                 reads_dict[image_index]["ecc"].append([131071-start,current, length,strand])
 
-        #接下来对每个图片的序列分别按照块的index进行排序
+
         for d in range(id_nums):
             sorted_info_list = sorted(reads_dict[d]["info"],key = lambda x: (x[0],x[1]))
             sorted_ecc_list = sorted(reads_dict[d]["ecc"],key = lambda x: (x[0],x[1]))
 
             #for i in range(10):
 
-            #    print(list(sorted_info_list[i][3]))
-            #print("排序后的各序列数量",len(sorted_info_list),len(sorted_ecc_list))
 
             if self.mode == 0:
-                #接下来将信息序列放到矩阵里
-                block_index = 0 #这是RS矩阵的索引
-                last_matrix_index = -1 #这是上一个read的part部分的索引
-                info_read_nums = len(sorted_info_list) #这是reads的数量
-                pass_mode = False #检验该条序列是否已被排除
-                error_index_list = [] #错误序列的索引index
-                part_index = 0 #这是RS矩阵中哪一部分的索引
 
-                #接下来是将信息序列放到RS矩阵里面
+                block_index = 0 
+                last_matrix_index = -1 
+                info_read_nums = len(sorted_info_list)
+                pass_mode = False 
+                error_index_list = [] 
+                part_index = 0 
+
+
                 for i in range(info_read_nums):
                     now_read = sorted_info_list[i]
                     #print(now_read)
@@ -268,19 +259,18 @@ class Outer_Code:
                                 part_index += 1
                             blocks_dict[d][block_index][part_index*32+now_matrix_index,:] = np.frombuffer(now_info, dtype=np.uint8)
             else:
-                #接下来是带top index的解码方案
-                #接下来将信息序列放到矩阵里
-                block_index = 0 #这是RS矩阵的索引
-                top_index = 0
-                last_matrix_index = 0 #这是上一个index表的part部分的索引
-                next_matrix_index = self.top_index_dict[d][top_index+1]
-                info_read_nums = len(sorted_info_list) #这是reads的数量
-                #pass_mode = False #检验该条序列是否已被排除
-                #error_index_list = [] #错误序列的索引index
-                part_index = 0 #这是RS矩阵中哪一部分的索引
-                #接下来是将信息序列放到RS矩阵里面
 
-                last_matrix_nums = 0 #这个记录的是上一个索引的具体图像块索引值
+                block_index = 0 
+                top_index = 0
+                last_matrix_index = 0 
+                next_matrix_index = self.top_index_dict[d][top_index+1]
+                info_read_nums = len(sorted_info_list) 
+                #pass_mode = False 
+                #error_index_list = [] 
+                part_index = 0 
+
+
+                last_matrix_nums = 0 
 
                 #test_index_list = []
                 for i in range(info_read_nums):
@@ -297,14 +287,7 @@ class Outer_Code:
                     
             
                         #raise ValueError ( "This is not a positive number!!" )
-                    #下面是test
-                    #if list(now_info) ==[  20 , 15, 255 , 97 ,243 ,134 ,  2, 154 ,132, 103,  27 , 27,  27 , 27 , 27 , 74] :
-                    #    for z in [38,39]:
-                    #        for x in range(224):
-                    #            print(blocks_dict[d][z][x])
-                    #    print(now_block_index,now_matrix_index,read_matrix_index,nums)
-                    #if now_block_index ==41087:
-                    #    print(now_block_index,now_matrix_index,read_matrix_index,nums,last_matrix_nums)
+
 
                     if now_block_index > nums :
                         block_index = read_matrix_index//7
@@ -326,11 +309,11 @@ class Outer_Code:
                             blocks_dict[d][block_index][part_index*32+now_matrix_index,:] = np.frombuffer(now_info, dtype=np.uint8)
                     
 
-            #接下来是将校验序列放到RS矩阵里面
-            ecc_read_nums = len(sorted_ecc_list)#这是校验序列的数量
-            last_matrix_index = 0 #这是上一个read的part部分的索引
-            pass_mode = False #检验该条序列是否已被排除
-            error_index_list = [] #错误序列的索引index
+
+            ecc_read_nums = len(sorted_ecc_list)
+            last_matrix_index = 0 
+            pass_mode = False 
+            error_index_list = [] 
 
             for i in range(ecc_read_nums):
                 now_read = sorted_ecc_list[i]
@@ -344,7 +327,7 @@ class Outer_Code:
                     blocks_dict[d][now_block_index][7*32+now_matrix_index,:] = np.frombuffer(now_info, dtype=np.uint8)
             
             
-            #test:以下是对RS矩阵进行检验：
+
             for i in range(len(blocks_dict[d])):
                 decode_matrix = blocks_dict[d][i]
                 bf_matrix = self.test_list[i]
@@ -353,14 +336,12 @@ class Outer_Code:
                     #print(i,j,decode_matrix[j], bf_matrix[j])
                     if not np.array_equal(decode_matrix[j], bf_matrix[j]):
                         k = j
-                        #print("出现不相等",i,j,decode_matrix[j], bf_matrix[j])
+
                 
                 #if not np.array_equal(decode_matrix[k], bf_matrix[k]):
                 #    break
                 
 
-            #接下来是对RS矩阵进行解码，并输出最终结果
-            #print("解码RS块的数量",len(blocks_dict[d]))
             test_g = open("test_get","w")
             test_g.write(str(blocks_dict[d]))
             test_g.close()
@@ -387,13 +368,12 @@ class Outer_Code:
                         blocks_dict[d][j][:-self.ecc_nums,k] = new_info
                     except Exception as e:
                         pass
-                        #print("出现报错：",d,j,k,len(blocks_dict[d]))
-                        #print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+
                 for k in range(self.reads_nums):
                     if j == len(blocks_dict[d])-1 and np.all(blocks_dict[d][j][k,:] == 0):
                         continue
                     result_list[d].append(bytes(blocks_dict[d][j][k,:].tolist()))
-        print("外码后输出的序列",len(result_list[0]))
+
 
         return result_list
 
