@@ -1,9 +1,9 @@
 import random
 import numpy as np
 from random import seed, shuffle, randint, choice
-rd = random.Random() #该步骤是防止受随机种子的影响 
+rd = random.Random() 
 def channel_model_unit(code, pr_dict):
-    # 信道模拟函数--修改为只允许单个插删替错误
+    
     del_num = 0
     ins_num = 0
     sub_num = 0
