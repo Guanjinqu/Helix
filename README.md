@@ -3,6 +3,7 @@ HELIX: A Novel Biological Image Storage System based on DNA Data Storage
 ## Requirements
 - opencv-python
 - reedsolo
+- scikit-image
 - numpy
 - torch
 - torchvision
