@@ -23,7 +23,7 @@ CT dataset:https://www.kaggle.com/datasets/kmader/siim-medical-images
 
 X-ray dataset:https://www.kaggle.com/datasets/tommyngx/digital-knee-xray/data
 
-Sequencing datasets for in vitro experiments:
+Sequencing datasets for in vitro experiments:https://doi.org/10.6084/m9.figshare.25957606.v1
 
 ## Parameter settings
 If you want to use other images, please modify the parameters in **coder.py**:
