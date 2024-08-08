@@ -24,7 +24,7 @@ DATA_STRAND_GROUP_SIZE  = 32 #No need to adjust this parameter
 DATA_LENGTH     = 11 #Data length
 IMAGE_NUMS = 1 #Number of pictures
 
-OC = Outer_Code(BLOCK_COUNT,fig_nums = IMAGE_NUMS)
+OC = Outer_Code(BLOCK_COUNT,length=DATA_LENGTH+5,fig_nums = IMAGE_NUMS)
 
 def get_image_header(width, height, quality):
     """
@@ -455,6 +455,16 @@ class JpegBlock():
         return str(self.is_start) + " " + str(self.is_end) + " " + str(self.strands)  + " " + str(self.dislocated)
     
 def image_to_dna(input_image_path, image_id=0):
+    """
+    Converts an image into DNA sequences for storage.
+
+    Parameters:
+    - input_image_path: The file path of the input image.
+    - image_id: An identifier for the image, used in the encoding process.
+
+    Returns:
+    - dna_sequences: A list of DNA sequences representing the image data.
+    """
     print("Encoding Params:")
     print("IMAGE_QUALITY:", IMAGE_QUALITY, "DUPLICATE:", DUPLICATE)
 
@@ -466,7 +476,7 @@ def image_to_dna(input_image_path, image_id=0):
 
     print("Encoding image blocks...")
     orginal_strands_data = blocks_to_strands(blocks, image_id)
-    print("Raw strand count:", len(orginal_strands_data))
+    #print("Raw strand count:", len(orginal_strands_data))
     
     print("Encoding DNA strands...")
     out_sequences = OC.encode(image_id,orginal_strands_data)
@@ -475,8 +485,16 @@ def image_to_dna(input_image_path, image_id=0):
     return dna_sequences
 
 def dna_to_image(dna_sequences, output_image_path,repair_mode = False):
+    """
+    Converts DNA sequences to images.
+
+    :param dna_sequences: list of DNA sequences
+    :param output_image_path: list of paths to output images.
+    :param repair_mode: whether to enable repair mode, default is False
+    """
     print("Decoding DNA strands...")
     strands = ecc.decode(dna_sequences, 2)
+    print(list(strands[0]))
     output_strands = OC.decode(IMAGE_NUMS,strands)
     print("Decoding image blocks...",len(output_strands[0]))
     for i in range(IMAGE_NUMS):
