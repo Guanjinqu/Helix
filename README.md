@@ -38,7 +38,7 @@ Other adjustable parameters include:
 
 ## Image Repair 
 
-If you want to enable the image repair function, please download the network from https://drive.google.com/file/d/1hwrLgfwms1bDXkYxM8D_hd3IU8xaqDsU/view?usp=sharing and put it in the  folder, then modify the **repair_mode** option in the **dna_to_image** function. If you want to train a new image repair network, please create a new folder called **train** and put the image set in it. Then run **train.py** in the nn folder.
+If you want to enable the image repair function, please download the network from https://drive.google.com/file/d/1hwrLgfwms1bDXkYxM8D_hd3IU8xaqDsU/view?usp=sharing and put it in the  folder, then modify the **repair_mode** option in the **dna_to_image** function. Note that this neural network is for spatiotemporal histology images; you can train neural networks for other datasets on your own. If you want to train a new image repair network, please create a new folder called **train** and put the image set in it. Then run **train.py** in the nn folder.
 
 ## Golang Codecs
 We have Golang's Error Correcting Code coder, which has a faster decoding speed. If you want to use Golang decoder, you need to overwrite all the files in the "go" folder to the root directory, and then change the **DATA_LENGTH** in **coder.py** to 10.
